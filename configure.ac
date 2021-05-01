@@ -38,13 +38,15 @@ dnl                      0 if you incremented CURRENT.
 dnl  - CURRENT (Major):  Increment if the interface has additions, changes,
 dnl                      removals.
 dnl ---------------------------------------------------------------------------
-LIBEXIF_GTK_AGE=0
+LIBEXIF_GTK_AGE=1
 LIBEXIF_GTK_REVISION=1
-LIBEXIF_GTK_CURRENT=5
+LIBEXIF_GTK_CURRENT=6
 AC_SUBST([LIBEXIF_GTK_AGE])
 AC_SUBST([LIBEXIF_GTK_REVISION])
 AC_SUBST([LIBEXIF_GTK_CURRENT])
-LIBEXIF_GTK_VERSION_INFO=`expr $LIBEXIF_GTK_CURRENT + $LIBEXIF_GTK_REVISION`:$LIBEXIF_GTK_AGE:$LIBEXIF_GTK_REVISION
+AC_SUBST([LIBEXIF_GTK_CURRENT_MIN],
+         [`expr $LIBEXIF_GTK_CURRENT - $LIBEXIF_GTK_AGE`])
+LIBEXIF_GTK_VERSION_INFO=$LIBEXIF_GTK_CURRENT:$LIBEXIF_GTK_AGE:$LIBEXIF_GTK_REVISION
 AC_SUBST([LIBEXIF_GTK_VERSION_INFO])
 
 GP_CONFIG_MSG([Compiler], [${CC}])
@@ -73,11 +75,7 @@ AC_SUBST([LIBEXIF_GTK_EXTENSION])dnl
 # ---------------------------------------------------------------------------
 ALL_LINGUAS="de es fr pl ru"
 AM_PO_SUBDIRS
-AS_VAR_IF([LIBEXIF_GTK_EXTENSION],
-          [gtk],
-          [LIBEXIF_GTK_FULLNAME=libexif-$LIBEXIF_GTK_EXTENSION$LIBEXIF_GTK_CURRENT],
-          [LIBEXIF_GTK_FULLNAME=libexif-$LIBEXIF_GTK_EXTENSION-$LIBEXIF_GTK_CURRENT])
-GP_GETTEXT_HACK([${LIBEXIF_GTK_FULLNAME}], [Lutz Müller and others])
+GP_GETTEXT_HACK([${PACKAGE}-${LIBEXIF_GTK_CURRENT_MIN}], [Lutz Müller and others])
 AM_GNU_GETTEXT_VERSION([0.14.1])
 AM_GNU_GETTEXT([external])
 AM_ICONV
