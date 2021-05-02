@@ -30,10 +30,15 @@ When building from source out of git, please run "autoreconf -i" first.
 NOTE TO PACKAGERS
 =================
 
-The default is to build the gtk2 version of the library (minimum gtk2
-version: 2.4).  The configure option --with-gtk3 allows building with the gtk3
-version of the library. Both versions can be installed on a system at
-the same time.
+When gtk+-2.0 is detected via pkg-config, the gtk2 version of
+libexif-gtk called libexif-gtk is built.
+
+When gtk+-3.0 is detected via pkg-config, the gtk3 version of
+libexif-gtk called libexif-gtk3 is built.
+
+Both versions can be built in the same build directory, and be
+installed on a system at the same time. Both use the same common
+translation data, and use the same common set of C header files.
 
 
 NOTE TO DEVELOPERS

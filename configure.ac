@@ -14,6 +14,7 @@ AM_INIT_AUTOMAKE([
   dist-xz
   dist-bzip2
   check-news
+  subdir-objects
 ])
 AM_SILENT_RULES([yes])
 
@@ -55,19 +56,19 @@ dnl GP_CONFIG_MSG([Features])
 
 
 # ---------------------------------------------------------------------------
-# conditional libraries
+# prepare building for different versions of Gtk
 # ---------------------------------------------------------------------------
-AC_ARG_WITH([gtk3],
-            [AS_HELP_STRING([--with-gtk3],[build with gtk3 (default is gtk2)])],
-            [LIBEXIF_GTK_EXTENSION=gtk3],
-            [LIBEXIF_GTK_EXTENSION=gtk])
+PKG_CHECK_MODULES([GTK2], [gtk+-2.0 >= 2.4],
+                  [have_gtk2=yes], [have_gtk2=no])
+PKG_CHECK_MODULES([GTK3], [gtk+-3.0],
+                  [have_gtk3=yes], [have_gtk3=no])
 
-AS_VAR_IF([LIBEXIF_GTK_EXTENSION],
-          [gtk3],
-          [GP_CHECK_LIBRARY([GTK], [gtk+-3.0])],
-          [GP_CHECK_LIBRARY([GTK], [gtk+-2.0], [>= 2.4])])
+AM_CONDITIONAL([HAVE_GTK2], [test "x$have_gtk2" = xyes])
+AM_CONDITIONAL([HAVE_GTK3], [test "x$have_gtk3" = xyes])
 
-AC_SUBST([LIBEXIF_GTK_EXTENSION])dnl
+AS_IF([test "x$have_gtk2" = xyes], [],
+      [test "x$have_gtk3" = xyes], [],
+      [AC_MSG_ERROR([No gtk found. pkg-config must find at least one of gtk+2.0, gtk+3.0.])])
 
 
 # ---------------------------------------------------------------------------
@@ -85,7 +86,9 @@ GP_GETTEXT_FLAGS
 # ---------------------------------------------------------------------------
 # libraries needed
 # ---------------------------------------------------------------------------
-GP_CHECK_LIBRARY([LIBEXIF], [libexif])dnl
+PKG_CHECK_MODULES([LIBEXIF], [libexif], [], [dnl
+  AC_MSG_ERROR([libexif-gtk requires that pkg-config can find libexif.])
+])
 
 
 # ---------------------------------------------------------------------------
